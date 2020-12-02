@@ -33,11 +33,11 @@ public class CitiesView extends Div {
 
         /* content */
         configureGrid();
-//
-//        Div divContent = new Div();
-//        divContent.add(gridCities);
 
-        add(gridCities);
+        Div divContent = new Div();
+        divContent.add(gridCities);
+
+        add(divContent);
     }
 
     private void configureGrid(){
