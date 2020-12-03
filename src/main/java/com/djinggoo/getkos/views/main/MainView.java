@@ -1,9 +1,15 @@
 package com.djinggoo.getkos.views.main;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.Scanner;
 
-import com.vaadin.flow.component.ClickEvent;
+import com.djinggoo.getkos.backend.utils.InitializeFirebaseServer;
+import com.google.cloud.firestore.Firestore;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
@@ -14,7 +20,6 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,6 +28,7 @@ import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.upload.FinishedEvent;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
@@ -31,6 +37,7 @@ import com.djinggoo.getkos.views.cities.CitiesView;
 import com.djinggoo.getkos.views.areas.AreasView;
 import com.djinggoo.getkos.views.boardingtypes.BoardingTypesView;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.apache.coyote.InputBuffer;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -133,12 +140,29 @@ public class MainView extends AppLayout {
     }
 
     private Upload uploadCredentials(){
-        MemoryBuffer memoryBuffer = new MemoryBuffer();
-        Upload upload = new Upload(memoryBuffer);
+//        MemoryBuffer receiverBuffer = new MemoryBuffer();
+        FileBuffer receiverBuffer = new FileBuffer();
+        Upload upload = new Upload(receiverBuffer);
 
         upload.addFinishedListener((ComponentEventListener<FinishedEvent>) event -> {
             System.out.println(event.getFileName());
             System.out.println(event.getMIMEType());
+
+            InputStream inputStream = receiverBuffer.getInputStream();
+
+            new InitializeFirebaseServer(inputStream);
+
+
+
+//            receiverBuffer.getFileData().getOutputBuffer().
+//            receiverBuffer.getFileDescriptor()
+
+//            Scanner myReader = new Scanner(receiverBuffer.getInputStream());
+//            while (myReader.hasNextLine()) {
+//                String data = myReader.nextLine();
+//                System.out.println(data);
+//            }
+
         });
 
         return upload;
